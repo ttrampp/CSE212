@@ -37,17 +37,34 @@ public class TakingTurnsQueue
         {
             throw new InvalidOperationException("No one in the queue.");
         }
+
+        //Take the person at the from of the line --- FIFO
+        Person person = _people.Dequeue();
+
+        //If the person has infinite turns -- turns is 0 or negative
+        if (person.Turns <= 0)
+        {
+            //Put them back in the queue without changing anything
+            _people.Enqueue(person);
+        }
+
+        //Finite turns
+        //If they still have turns left -- more than one
         else
         {
-            Person person = _people.Dequeue();
-            if (person.Turns > 1)
+            //Reduce their remaining turns by 1
+            person.Turns -= 1;
+
+            if (person.Turns > 0)
             {
-                person.Turns -= 1;
+                //Put them back in the queue if they have turns remaining
                 _people.Enqueue(person);
             }
-
-            return person;
+            //else they've run out of turns so we drop them
         }
+
+        return person;
+
     }
 
     public override string ToString()

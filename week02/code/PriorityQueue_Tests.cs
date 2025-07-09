@@ -6,24 +6,44 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 public class PriorityQueueTests
 {
     [TestMethod]
-    // Scenario: 
-    // Expected Result: 
-    // Defect(s) Found: 
+    // Scenario: Enqueque 3 items with different priorities and dequeue once. 
+    // Expected Result: Itme with the highest priority should be returned.
+    // Defect(s) Found: Original code failed to remove item from queue after returning it.
     public void TestPriorityQueue_1()
     {
         var priorityQueue = new PriorityQueue();
-        Assert.Fail("Implement the test case and then remove this.");
+        priorityQueue.Enqueue("Low", 1);        //priority 1
+        priorityQueue.Enqueue("Medium", 5);     //priority 5
+        priorityQueue.Enqueue("High", 10);      //priority 10
+
+        var result = priorityQueue.Dequeue();
+
+        Assert.AreEqual("High", result);
     }
 
     [TestMethod]
-    // Scenario: 
-    // Expected Result: 
-    // Defect(s) Found: 
+    // Scenario: Enqueue two items with same priority and dequeue once.
+    // Expected Result: First item inserted should be returned --FIFO among equals.
+    // Defect(s) Found: Original code didn't properly break ties by insertion order.
     public void TestPriorityQueue_2()
     {
         var priorityQueue = new PriorityQueue();
-        Assert.Fail("Implement the test case and then remove this.");
+        priorityQueue.Enqueue("First", 7);
+        priorityQueue.Enqueue("Second", 7);
+
+        var result = priorityQueue.Dequeue();
+
+        Assert.AreEqual("First", result);
     }
 
     // Add more test cases as needed below.
+
+    [TestMethod]
+    // Scenario: Dequeue from an empty queue
+    // Expected Result: Exceptions should be thrown
+    public void TestPriorityQueue_Empty()
+    {
+        var priorityQueue = new PriorityQueue();
+        Assert.ThrowsException<InvalidOperationException>(() => priorityQueue.Dequeue());
+    }
 }
