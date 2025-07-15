@@ -1,3 +1,4 @@
+using System.Data.SqlTypes;
 using System.Text.Json;
 
 public static class SetsAndMaps
@@ -21,9 +22,64 @@ public static class SetsAndMaps
     /// <param name="words">An array of 2-character words (lowercase, no duplicates)</param>
     public static string[] FindPairs(string[] words)
     {
-        // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        // TODO Problem 1 - ADD YOUR CODE HERE   
+
+        //create a set to keep track of all words we've already seen
+        var seen = new HashSet<string>();
+        //create a set to track which words have already been used in a pair
+        var used = new HashSet<string>();
+        //create a list to store the result pairs as strings
+        var result = new List<string>();
+
+        //loop through each word in the input array
+        foreach (var word in words)
+        {
+            //assume the word is a palindrome until proven otherwise
+            bool isPalindrome = true;
+
+            //loop through the first half of the word
+            for (int i = 0; i < word.Length / 2; i++)
+            {
+                //compare the character from the front and the matching from the end
+                if (word[i] != word[word.Length - 1 - i])
+                {
+                    //if they don't match, then it is not a palindrome
+                    isPalindrome = false;
+                    break; //exit loop early because it is not a palindrome
+                }
+            }
+            //if the word is a palindrom...like bob or aa, then skip it
+            if (isPalindrome)
+                continue;
+
+            //convert the word to a character array so we can reverse it, so "top" into ['t' 'o' 'p']
+            var charArray = word.ToCharArray();
+            //reverse the character array in-place, so ['t' 'o' 'p'] becomes ['p' 'o' 't']
+            Array.Reverse(charArray);
+            //create a new string from the reversed character array, so the reversed array back into a word "pot"
+            string reversed = new string(charArray);
+
+
+            //check if we've seen the reversed word AND neither word has already been used in a pair
+            if (seen.Contains(reversed) && !used.Contains(reversed) && !used.Contains(word))
+            {
+                //if so, it's a new valid pair , add it to the result
+                result.Add($"{reversed} & {word}");
+
+                //mark both words as used so we don't reuse them
+                used.Add(word);
+                used.Add(reversed);
+            }
+
+            //add the current word to the 'seen' set for future comparisons
+            seen.Add(word);
+        }
+
+        //convert the result list to an array and return it
+        return result.ToArray();
     }
+
+
 
     /// <summary>
     /// Read a census file and summarize the degrees (education)
@@ -43,6 +99,19 @@ public static class SetsAndMaps
         {
             var fields = line.Split(",");
             // TODO Problem 2 - ADD YOUR CODE HERE
+
+            //get the degree from column 4(index 3)
+            var degree = fields[3];
+
+            //Add/Update the count in the dictionary depending on if it already exists
+            if (!degrees.ContainsKey(degree))
+            {
+                degrees[degree] = 1;
+            }
+            else
+            {
+                degrees[degree] += 1;
+            }
         }
 
         return degrees;
@@ -67,7 +136,45 @@ public static class SetsAndMaps
     public static bool IsAnagram(string word1, string word2)
     {
         // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+
+        //remove spaces and convert to lowercase
+        word1 = word1.Replace(" ", "").ToLower();
+        word2 = word2.Replace(" ", "").ToLower();
+
+        //if lengths are not equal, then it is false(not an anagram)
+        if (word1.Length != word2.Length)
+            return false;
+
+        //Dictionary to count how many times each letter appears in word1
+        var count = new Dictionary<char, int>();
+
+        //loop through each character
+        foreach (var c in word1)
+        {
+            //if the character is not already in the dictionary, add it with a count = 1
+            if (!count.ContainsKey(c))
+                count[c] = 1;
+            //if the character IS already in the dictionary, then increment the count by 1
+            else
+                count[c]++;
+        }
+
+        //go through each character in word2 and subtract from the count
+        foreach (char c in word2)
+        {
+            //if the letter is not in the dictionary, word2 has a letter word1 doesn't have, then not an anagram
+            if (!count.ContainsKey(c))
+                return false;
+            //decrease the count for that character
+            count[c]--;
+
+            //if the count goes below zero, word2 has too many of that letter, then not an anagram
+            if (count[c] < 0)
+                return false;
+        }
+
+        //if the letters and counts match perfectly, it is an anagram
+        return true;
     }
 
     /// <summary>
@@ -101,6 +208,27 @@ public static class SetsAndMaps
         // on those classes so that the call to Deserialize above works properly.
         // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
         // 3. Return an array of these string descriptions.
-        return [];
+
+        //create a new list to store the formatted earthquake summaries
+        var summaries = new List<string>();
+
+        //loop through each feature (earthquake report) in the deserialized JSON object
+        foreach (var feature in featureCollection.Features)
+        {
+            //extract the magnitude value from the feature's properties
+            var mag = feature.Properties.Mag;
+            //extract the location (place) from the feature's properties
+            var place = feature.Properties.Place;
+
+            //only add if both values exist
+            if (mag != null && place != null)
+            {
+                //format the earthquake info and add it to the list
+                summaries.Add($"{place} - Mag {mag}");
+            }
+        }
+
+        //convert the List<string>  to a string array and return it as the final result
+        return summaries.ToArray();
     }
 }

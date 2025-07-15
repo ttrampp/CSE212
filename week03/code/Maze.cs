@@ -33,6 +33,16 @@ public class Maze
     public void MoveLeft()
     {
         // FILL IN CODE
+
+        //retrieve allowed directions at current position
+        bool[] directions = _mazeMap[(_currX, _currY)];
+
+        //Index 0 = left. check if moving left is allowed
+        if (!directions[0])
+            throw new InvalidOperationException("Can't go that way!");
+
+        //move left = decrease X by 1
+        _currX -= 1;
     }
 
     /// <summary>
@@ -42,6 +52,16 @@ public class Maze
     public void MoveRight()
     {
         // FILL IN CODE
+
+        //retrieve allowed directions at current position
+        bool[] directions = _mazeMap[(_currX, _currY)];
+
+        //Index 1 = right. check if moving right is allowed
+        if (!directions[1])
+            throw new InvalidOperationException("Can't go that way!");
+
+        //move right = increase X by 1
+        _currX += 1;
     }
 
     /// <summary>
@@ -51,6 +71,16 @@ public class Maze
     public void MoveUp()
     {
         // FILL IN CODE
+
+        //retrieve allowed directions at current position
+        bool[] directions = _mazeMap[(_currX, _currY)];
+
+        //Index 3 = up. check if moving up is allowed
+        if (!directions[2])
+            throw new InvalidOperationException("Can't go that way!");
+
+        //move up = decrease Y by 1
+        _currY -= 1;
     }
 
     /// <summary>
@@ -60,6 +90,16 @@ public class Maze
     public void MoveDown()
     {
         // FILL IN CODE
+
+        //retrieve allowed directions at current position
+        bool[] directions = _mazeMap[(_currX, _currY)];
+
+        //Index 3 = down. check if moving down is allowed
+        if (!directions[3])
+            throw new InvalidOperationException("Can't go that way!");
+
+        //move down = increase X by 1
+        _currY += 1;
     }
 
     public string GetStatus()
