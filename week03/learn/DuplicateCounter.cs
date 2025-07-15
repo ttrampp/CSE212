@@ -1,4 +1,6 @@
-﻿public class DuplicateCounter
+﻿using Microsoft.VisualBasic;
+
+public class DuplicateCounter
 {
     //Count how many duplicates are in a collection of data.
 
@@ -25,6 +27,17 @@
     private static int CountDuplicates(int[] data)
     {
         // Add code here.
-        return 0;
+        var seen = new HashSet<int>();
+        var duplicates = new HashSet<int>();
+
+        foreach (var item in data)
+        {
+            if (!seen.Add(item))
+            {
+                //If add returns false, it was already in the set
+                duplicates.Add(item);
+            }
+        }
+        return duplicates.Count;
     }
 }
