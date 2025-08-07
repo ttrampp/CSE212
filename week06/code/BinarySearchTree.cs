@@ -70,9 +70,9 @@ public class BinarySearchTree : IEnumerable<int>
     /// </summary>
     public IEnumerable Reverse()
     {
-        var numbers = new List<int>();
-        TraverseBackward(_root, numbers);
-        foreach (var number in numbers)
+        var numbers = new List<int>();          //create and empty list
+        TraverseBackward(_root, numbers);       //fill it up
+        foreach (var number in numbers)         //loop through it
         {
             yield return number;
         }
@@ -81,6 +81,19 @@ public class BinarySearchTree : IEnumerable<int>
     private void TraverseBackward(Node? node, List<int> values)
     {
         // TODO Problem 3
+        //if the current spot is empty, there is nothing to do
+        if (node is null)
+        {
+            return;
+        }
+        //first we go right--because big numbers live on teh right
+        TraverseBackward(node.Right, values);
+
+        //then we deal with this node---adding it's number to the list
+        values.Add(node.Data);
+
+        //last thing is go left--because smaller numbers live on the left
+        TraverseBackward(node.Left, values);
     }
 
     /// <summary>
